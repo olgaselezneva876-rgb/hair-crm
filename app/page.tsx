@@ -1,17 +1,33 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
 
 export default function Page() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Регистрация
-  const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const colors = {
+    pageBg:
+      "radial-gradient(circle at top, rgba(183, 110, 121, 0.16), transparent 30%), linear-gradient(135deg, #f8f1f2 0%, #f4ebed 45%, #efe3e6 100%)",
+    cardBg: "rgba(255, 248, 248, 0.9)",
+    cardBorder: "1px solid rgba(183, 110, 121, 0.18)",
+    title: "#4A3A3D",
+    text: "#5F4A4E",
+    muted: "#8A7277",
+    accent: "#B76E79",
+    accentDark: "#9E5C66",
+    accentSoft: "rgba(183, 110, 121, 0.10)",
+    line: "#E8D7DA",
+    white: "#FFF8F8",
+  };
+
+  const handleSignUp = async () => {
     setLoading(true);
     setMessage("");
 
@@ -20,19 +36,18 @@ export default function Page() {
         email,
         password,
       });
+
       if (error) throw error;
+
       setMessage("Регистрация прошла! Теперь вы можете войти.");
-      // Не переходим сразу на дашборд, чтобы дать пользователю войти
     } catch (error: any) {
-      setMessage(error.message);
+      setMessage(error.message || "Ошибка регистрации");
     } finally {
       setLoading(false);
     }
   };
 
-  // Вход
-  const handleSignIn = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSignIn = async () => {
     setLoading(true);
     setMessage("");
 
@@ -41,13 +56,13 @@ export default function Page() {
         email,
         password,
       });
+
       if (error) throw error;
+
       setMessage("Вход выполнен!");
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 1000);
+      router.push("/dashboard");
     } catch (error: any) {
-      setMessage(error.message);
+      setMessage(error.message || "Ошибка входа");
     } finally {
       setLoading(false);
     }
@@ -62,21 +77,20 @@ export default function Page() {
         justifyContent: "center",
         padding: "24px",
         fontFamily: "Arial, sans-serif",
-        background:
-          "radial-gradient(circle at top, rgba(201, 168, 120, 0.16), transparent 30%), linear-gradient(135deg, #f8f3ee 0%, #f4ede6 45%, #efe6dc 100%)",
+        background: colors.pageBg,
       }}
     >
       <section
         style={{
           width: "100%",
           maxWidth: "440px",
-          background: "rgba(255, 252, 248, 0.88)",
+          background: colors.cardBg,
           backdropFilter: "blur(10px)",
           borderRadius: "28px",
           padding: "36px 32px",
-          border: "1px solid rgba(191, 161, 120, 0.22)",
+          border: colors.cardBorder,
           boxShadow:
-            "0 20px 60px rgba(86, 66, 45, 0.10), inset 0 1px 0 rgba(255,255,255,0.65)",
+            "0 20px 60px rgba(97, 70, 76, 0.10), inset 0 1px 0 rgba(255,255,255,0.7)",
         }}
       >
         <div style={{ marginBottom: "28px" }}>
@@ -89,9 +103,9 @@ export default function Page() {
               alignItems: "center",
               justifyContent: "center",
               background:
-                "linear-gradient(135deg, rgba(201,168,120,0.22) 0%, rgba(255,255,255,0.9) 100%)",
-              border: "1px solid rgba(191, 161, 120, 0.24)",
-              color: "#8c6a43",
+                "linear-gradient(135deg, rgba(183,110,121,0.18) 0%, rgba(255,255,255,0.92) 100%)",
+              border: `1px solid ${colors.line}`,
+              color: colors.accentDark,
               fontSize: "18px",
               marginBottom: "20px",
             }}
@@ -102,7 +116,7 @@ export default function Page() {
           <p
             style={{
               margin: 0,
-              color: "#9a7b55",
+              color: colors.accent,
               fontSize: "12px",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -118,7 +132,7 @@ export default function Page() {
               fontSize: "34px",
               lineHeight: 1.08,
               fontWeight: 600,
-              color: "#2f241a",
+              color: colors.title,
               letterSpacing: "-0.03em",
             }}
           >
@@ -130,7 +144,7 @@ export default function Page() {
           <p
             style={{
               margin: 0,
-              color: "#6f6255",
+              color: colors.text,
               fontSize: "15px",
               lineHeight: 1.65,
               maxWidth: "340px",
@@ -141,14 +155,13 @@ export default function Page() {
           </p>
         </div>
 
-        {/* Форма для email и пароля — общая */}
-        <form style={{ display: "grid", gap: "14px" }}>
+        <div style={{ display: "grid", gap: "14px" }}>
           <label
             htmlFor="email"
             style={{
               fontSize: "13px",
               fontWeight: 700,
-              color: "#5f5143",
+              color: colors.text,
               letterSpacing: "0.04em",
               textTransform: "uppercase",
             }}
@@ -167,12 +180,12 @@ export default function Page() {
               height: "54px",
               padding: "0 16px",
               borderRadius: "16px",
-              border: "1px solid rgba(176, 149, 115, 0.25)",
-              background: "rgba(255,255,255,0.72)",
-              color: "#2f241a",
+              border: `1px solid ${colors.line}`,
+              background: colors.white,
+              color: colors.title,
               fontSize: "15px",
               outline: "none",
-              boxShadow: "inset 0 1px 2px rgba(84, 61, 38, 0.04)",
+              boxShadow: "inset 0 1px 2px rgba(97, 70, 76, 0.04)",
             }}
           />
 
@@ -181,7 +194,7 @@ export default function Page() {
             style={{
               fontSize: "13px",
               fontWeight: 700,
-              color: "#5f5143",
+              color: colors.text,
               letterSpacing: "0.04em",
               textTransform: "uppercase",
             }}
@@ -200,12 +213,12 @@ export default function Page() {
               height: "54px",
               padding: "0 16px",
               borderRadius: "16px",
-              border: "1px solid rgba(176, 149, 115, 0.25)",
-              background: "rgba(255,255,255,0.72)",
-              color: "#2f241a",
+              border: `1px solid ${colors.line}`,
+              background: colors.white,
+              color: colors.title,
               fontSize: "15px",
               outline: "none",
-              boxShadow: "inset 0 1px 2px rgba(84, 61, 38, 0.04)",
+              boxShadow: "inset 0 1px 2px rgba(97, 70, 76, 0.04)",
             }}
           />
 
@@ -220,14 +233,14 @@ export default function Page() {
                 border: "none",
                 borderRadius: "16px",
                 cursor: "pointer",
-                color: "#fffaf4",
+                color: colors.white,
                 fontSize: "15px",
                 fontWeight: 700,
                 letterSpacing: "0.02em",
                 background: loading
-                  ? "linear-gradient(135deg, #c9b18f 0%, #b89b76 100%)"
-                  : "linear-gradient(135deg, #b9966b 0%, #8e6a46 100%)",
-                boxShadow: "0 16px 32px rgba(142, 106, 70, 0.22)",
+                  ? "linear-gradient(135deg, #d2b0b8 0%, #be909a 100%)"
+                  : `linear-gradient(135deg, ${colors.accent} 0%, ${colors.accentDark} 100%)`,
+                boxShadow: "0 16px 32px rgba(158, 92, 102, 0.22)",
               }}
             >
               {loading ? "Подготовка..." : "Зарегистрироваться"}
@@ -243,38 +256,38 @@ export default function Page() {
                 border: "none",
                 borderRadius: "16px",
                 cursor: "pointer",
-                color: "#fffaf4",
+                color: colors.white,
                 fontSize: "15px",
                 fontWeight: 700,
                 letterSpacing: "0.02em",
                 background: loading
-                  ? "linear-gradient(135deg, #c9b18f 0%, #b89b76 100%)"
-                  : "linear-gradient(135deg, #b9966b 0%, #8e6a46 100%)",
-                boxShadow: "0 16px 32px rgba(142, 106, 70, 0.22)",
+                  ? "linear-gradient(135deg, #d2b0b8 0%, #be909a 100%)"
+                  : `linear-gradient(135deg, ${colors.accent} 0%, ${colors.accentDark} 100%)`,
+                boxShadow: "0 16px 32px rgba(158, 92, 102, 0.22)",
               }}
             >
               {loading ? "Подготовка..." : "Войти"}
             </button>
           </div>
-        </form>
 
-        {message && (
-          <p
-            style={{
-              marginTop: "18px",
-              marginBottom: 0,
-              padding: "14px 16px",
-              borderRadius: "16px",
-              background: "rgba(191, 161, 120, 0.10)",
-              border: "1px solid rgba(191, 161, 120, 0.18)",
-              color: "#6c5438",
-              fontSize: "14px",
-              lineHeight: 1.6,
-            }}
-          >
-            {message}
-          </p>
-        )}
+          {message && (
+            <p
+              style={{
+                marginTop: "18px",
+                marginBottom: 0,
+                padding: "14px 16px",
+                borderRadius: "16px",
+                background: colors.accentSoft,
+                border: `1px solid ${colors.line}`,
+                color: colors.accentDark,
+                fontSize: "14px",
+                lineHeight: 1.6,
+              }}
+            >
+              {message}
+            </p>
+          )}
+        </div>
       </section>
     </main>
   );

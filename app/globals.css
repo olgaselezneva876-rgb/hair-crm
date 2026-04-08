@@ -1,3 +1,4 @@
+/* Общие стили */
 * {
   margin: 0;
   padding: 0;
@@ -6,4 +7,20 @@
 
 body {
   font-family: Arial, sans-serif;
+  background-color: #F5E8E4; /* Пудрово-розовый фон */
+  color: #2F241A; /* Темный текст для контраста */
+}
+
+/* Стили для кнопок */
+button {
+  background: linear-gradient(135deg, #D8B8B2 0%, #A9444F 100%); /* Кнопки с градиентом */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
 }
